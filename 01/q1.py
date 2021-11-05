@@ -44,24 +44,23 @@ image_pil = Image.open(file_path)
 # Pega os metadados da imagem, como no caso: JPG
 exifdata = image_pil.getexif()
 
-for tag_id in exifdata:
-	tag = TAGS.get(tag_id, tag_id)	
-	if tag=='XResolution':
-		resolution_x = exifdata.get(tag_id)
-		if isinstance(resolution_x, bytes):
-			resolution_x = resolution_x.decode()
-	if tag=='YResolution':
-		resolution_y = exifdata.get(tag_id)
-		if isinstance(resolution_y, bytes):
-			resolution_y = resolution_y.decode()
-if resolution_x!=0 and resolution_y!=0:
-	print(f'Resolução X:{resolution_x}\nResolução Y:{resolution_y}')
+for tag_id in exifdata: # Iterando sobre os metadados recuperados.
+  tag = TAGS.get(tag_id, tag_id) # Necessário para acessar a tag de cada metadado.
+  # Obtemos apenas a informação que desejamos. No caso, a resolução da imagem.
+  if tag == 'XResolution':
+    resolution_x = exifdata.get(tag_id) # Aqui, obtemos a resolução como uma tupla.
+    resolution_x = resolution_x[0]/resolution_x[1] # Para obter a resolução de forma certa, dividimos o primeiro elemento pelo segundo da tupla.
+  if tag == 'YResolution':
+    resolution_y = exifdata.get(tag_id) # Mesmo caso explicado antes apra a tupla.
+    resolution_y = resolution_y[0]/resolution_y[1] # Calculando a resolução.
+print(f'Resolução:\nX: {resolution_x}\nY: {resolution_y}')
 
 # j. Calcule o tamanho (dimensão em polegadas) da imagem
 
-result = width/resolution_x
-result_ = height/resolution_y
-print(f'Dimensão em polegadas: {round(float(result),2)}x{round(float(result_),2)}')
+# Para obter a dimensão em polegadas, precisamos dividir a dimensão em pixels pelo valor do DPI correspondente.
+width_in_inches = width/resolution_x # Calculando a largura da imagem em polegadas.
+height_in_inches = height/resolution_y # Calculando a altura da imagem em polegadas.
+print(f'Dimensão em polegadas:\n{round(float(width_in_inches),2)} de largura\n{round(float(height_in_inches),2)} de altura')
 
 # k. Verifique o formato do arquivo e calcule o índice de compressão aplicado
 
