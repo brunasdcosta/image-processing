@@ -2,8 +2,10 @@ import cv2 # pip install opencv-python
 from PIL import Image # pip install pillow
 from PIL.ExifTags import TAGS
 from matplotlib import pyplot as plt # pip install matplotlib
+import os
 
-file_path = '/home/bruna/workspace/image-processing/01/imagem1.jpg'
+directory = os.getcwd()
+file_path = directory + '/imagem1.jpg'
 
 # a. Adiquira a imagem
 image = cv2.imread(file_path)
@@ -36,8 +38,12 @@ print(f'Dimensão:\n{width} pixels de largura\n{height} pixels de altura')
 resolution_x = 0
 resolution_y = 0
 
+# Abre a imagem
 image_pil = Image.open(file_path)
+
+# Pega os metadados da imagem, como no caso: JPG
 exifdata = image_pil.getexif()
+
 for tag_id in exifdata:
 	tag = TAGS.get(tag_id, tag_id)	
 	if tag=='XResolution':
